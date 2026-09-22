@@ -4,8 +4,10 @@
  * exponential-backoff WebSocket reconnection, and Data Mode isolation.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const WS_BASE = API_BASE.replace(/^http/, 'ws');
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
+const WS_BASE = API_BASE 
+  ? API_BASE.replace(/^http/, 'ws') 
+  : (typeof window !== 'undefined' ? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}` : 'ws://localhost:8000');
 
 // Local storage keys
 const TOKEN_KEY = 'nagarnetra_auth_token';
