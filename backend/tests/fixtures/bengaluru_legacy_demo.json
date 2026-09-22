@@ -1,0 +1,8 @@
+﻿{
+  "description": "Legacy Bengaluru BBMP/BMTC demo seed data preserved for historical rollback reference only. Not imported into production.",
+  "migrated_date": "2026-09-21",
+  "target_deployment": "Tamil Nadu - Greater Chennai Corporation & MTC",
+  "legacy_authority": "BBMP",
+  "legacy_agency": "BMTC",
+  "legacy_corridors": ["500-D", "335-E", "201-R", "KIA-8"]
+}

@@ -1,0 +1,21 @@
+﻿{
+  "name": "NagarNetra • Bus Sensor Node",
+  "short_name": "NagarNetra",
+  "description": "Mobile Edge-AI Urban Telemetry and Defect Verification Node",
+  "start_url": "/pwa",
+  "display": "standalone",
+  "background_color": "#0B0F17",
+  "theme_color": "#0D1B2A",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

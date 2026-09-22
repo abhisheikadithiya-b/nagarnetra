@@ -1,0 +1,38 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+
+# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+env/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Next.js & Frontend
+frontend/.next/
+frontend/out/
+frontend/node_modules/
+node_modules/
+
+# Local databases & evidence
+*.db
+*.sqlite3
+nagarnetra.db
+backend/app/data/evidence/
+.tempmediaStorage/
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

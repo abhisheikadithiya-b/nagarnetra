@@ -1,0 +1,103 @@
+﻿version: '3.8'
+
+services:
+  # NagarNetra FastAPI Backend
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: nagarnetra-api:2.4.0
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=postgresql://nagarnetra:postgis_secure_pass@db:5432/nagarnetra_prod
+      - JWT_SECRET=prod_pilot_super_secret_jwt_key_bangalore_2026
+      - ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    profiles: ["prod"]
+
+  # Demo Backend (SQLite standalone)
+  api-demo:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: nagarnetra-api:demo
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=demo
+      - DATABASE_URL=sqlite:///backend/nagarnetra.db
+      - JWT_SECRET=demo_pilot_jwt_secret_key_bangalore_2026
+      - ALLOWED_ORIGINS=*
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - demo_data:/app/backend
+    profiles: ["demo", "default"]
+
+  # Next.js Command Center & PWA
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    image: nagarnetra-web:2.4.0
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - api-demo
+    profiles: ["demo", "prod", "default"]
+
+  # PostgreSQL + PostGIS Spatial Database
+  db:
+    image: postgis/postgis:15-3.3-alpine
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=nagarnetra
+      - POSTGRES_PASSWORD=postgis_secure_pass
+      - POSTGRES_DB=nagarnetra_prod
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nagarnetra -d nagarnetra_prod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    profiles: ["prod"]
+
+  # Redis In-Memory Bus Telemetry Cache & PubSub
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    profiles: ["prod"]
+
+volumes:
+  postgres_data:
+  redis_data:
+  demo_data:
